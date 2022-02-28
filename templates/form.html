@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}New User{% endblock %}
+{% block content %}
+    <h1>New User</h1>
+    {% for category, msg in get_flashed_messages() %}
+    <p>{{ msg }}</p>
+    {% endfor %}
+    <form id="new-user" action="/users/new" method="POST">
+        <label for="first_name">First Name:</label>
+        <input type="text" id ="first_name" name="first_name" maxlength="25" placeholder="First name">
+        <br>
+        <label for="last_name">Last Name:</label>
+        <input type="text" id ="last_name" name="last_name" maxlength="25" placeholder="last name">
+        <br>
+        <label for="image_url">Picture Location:</label>
+        <input type="text" id ="image_url" name="image_url" placeholder="Enter an Image URL">
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+{% endblock %}
