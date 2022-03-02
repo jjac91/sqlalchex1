@@ -4,19 +4,16 @@
 
 {% block content %}
 
-<div class="row">
-
-  {% if user.image_url %}
-  <div>
-    <img src="{{ user.image_url }}"
+<h1>{{ user.full_name }}</h1>
+{% if user.image_url %}
+<div>
+  <img src="{{ user.image_url }}"
          alt="{{ user.full_name }}"
          >
-  </div>
-  {% endif %}
+</div>
+{% endif %}
 
-  <div>
-    <h1>{{ user.full_name }}</h1>
-
+<div>
     <form>
       <button
               formaction="/users/{{ user.id }}/edit"
@@ -26,9 +23,19 @@
               formaction="/users/{{ user.id }}/delete"
               formmethod="POST">Delete
       </button>
-    </form>
-
-  </div>
+  </form>
 </div>
+<h2>Posts</h2>
+  <ul>
+    {% for post in user.posts %}
+    <li>
+        <a href="/posts/{{ post.id }}">{{post.title }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+  <a href="/users/{{ user.id }}/posts/new">
+      <button>Add post</button>
+  </a>
+
 
 {% endblock %}

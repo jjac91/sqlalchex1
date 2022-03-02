@@ -1,7 +1,8 @@
+from email import contentmanager
 from unittest import TestCase
 
 from app import app
-from models import db, User
+from models import db, User, Post
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///blogly_db'
 app.config['SQLALCHEMY_ECHO'] = False
@@ -16,16 +17,21 @@ class UserViewsTestCase(TestCase):
     """Tests for views for Users."""
 
     def setUp(self):
-        """Add sample user."""
+        """Add sample user and sample post."""
 
-        User.query.delete()
+        db.drop_all()
+        db.create_all()
 
-        kaguya = User(first_name='Kaguya', last_name='Shinomiya',
-                      image_url='https://cdn.anime-planet.com/characters/primary/kaguya-shinomiya-1-190x266.jpg?t=1625997672')
-        db.session.add(kaguya)
+        self.user = User(first_name='Kaguya', last_name='Shinomiya',
+                         image_url='https://cdn.anime-planet.com/characters/primary/kaguya-shinomiya-1-190x266.jpg?t=1625997672')
+        db.session.add(self.user)
         db.session.commit()
 
-        self.user_id = kaguya.id
+        test_post = Post(title="test", content="test content", user_id=1)
+        db.session.add(test_post)
+        db.session.commit()
+
+        self.user_id = self.user.id
 
     def tearDown(self):
         """Clean up any fouled transaction."""
@@ -50,8 +56,7 @@ class UserViewsTestCase(TestCase):
 
     def test_add_user(self):
         with app.test_client() as client:
-            sam = {"first_name": 'Sam', "last_name": 'Wise',
-                   "image_url": ""}
+            sam = {"first_name": 'Sam', "last_name": 'Wise'}
             resp = client.post("/users/new", data=sam, follow_redirects=True)
             html = resp.get_data(as_text=True)
 
@@ -63,3 +68,11 @@ class UserViewsTestCase(TestCase):
             resp = client.get("/", follow_redirects=True)
             html = resp.get_data(as_text=True)
             self.assertIn('Users', html)
+
+    def test_list_post(self):
+        with app.test_client() as client:
+            resp = client.get("/users/1")
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('test', html)

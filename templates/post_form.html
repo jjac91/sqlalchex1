@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}New Post by {{ user.full_name }}{% endblock %}
+{% block content %}
+    <h1>New Post by {{ user.full_name }}</h1>
+    {% for category, msg in get_flashed_messages() %}
+    <p>{{ msg }}</p>
+    {% endfor %}
+    <form id="new-post" action="/users/{{ user.id }}/posts/new" method="POST">
+        <label for="Title">Title:</label>
+        <input type="text" id ="title" name="title" maxlength="25">
+        <br>
+        <label for="content">Content:</label>
+        <textarea id ="content" name="content"></textarea>
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+    <a href="/users/{{ user.id }}"><button>Cancel</button></a>
+{% endblock %}
