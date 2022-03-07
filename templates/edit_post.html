@@ -12,6 +12,14 @@
         <label for="content">Content:</label>
         <textarea id ="content" name="content" placeholder="{{post.content}}"></textarea>
         <br>
+        <h2>Tags</h2>
+        <ul>
+        {% for tag in tags %}
+            <li>
+                <input type="checkbox" id="{{tag.name}}" name="tag" value="{{tag.id}}" label for="{{tag.name}}">{{tag.name}}</label>
+            </li>
+        {% endfor %}
+        </ul>
         <button type="submit">Submit</button>
     </form>
     <a href="/users/{{ post.user.id }}"><button>Cancel</button></a>

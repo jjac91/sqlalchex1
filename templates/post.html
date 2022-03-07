@@ -6,7 +6,11 @@
 
 <h1>{{post.title}}</h1>
 <h2>by {{ post.user.full_name }}</h2>
-<h3>on {{post.created_at}}</h3>
+<h3>Tags: {% for tag in post.tag %}
+    {{tag.name}} 
+    {% endfor %}
+</h3>
+<h4>on {{post.created_at}}</h3>
 <div>
     {{post.content}}
 </div>

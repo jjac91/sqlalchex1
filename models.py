@@ -1,4 +1,5 @@
 from email.policy import default
+from enum import unique
 from flask_sqlalchemy import SQLAlchemy
 import datetime
 db = SQLAlchemy()
@@ -16,7 +17,8 @@ class User(db.Model):
     last_name = db.Column(db.String(25), nullable=False)
     image_url = db.Column(db.String, nullable=False, default=default_url)
 
-    posts = db.relationship('Post', backref='user')
+    posts = db.relationship('Post', backref='user',
+                            cascade="all, delete-orphan")
 
     @property
     def full_name(self):
@@ -36,6 +38,27 @@ class Post(db.Model):
     created_at = db.Column(db.DateTime, nullable=False,
                            default=datetime.datetime.now)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+
+    tag = db.relationship('Tag', secondary='posttags', backref="post")
+
+
+class Tag(db.Model):
+    """Tag for a post"""
+
+    __tablename__ = "tags"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String, nullable=False, unique=True)
+
+
+class PostTag(db.Model):
+    """A tag attributed to a post"""
+
+    __tablename__ = "posttags"
+
+    post_id = db.Column(db.Integer, db.ForeignKey(
+        "posts.id"), primary_key=True)
+    tag_id = db.Column(db.Integer, db.ForeignKey("tags.id"), primary_key=True)
 
 
 def connect_db(app):

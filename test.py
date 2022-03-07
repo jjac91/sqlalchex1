@@ -56,7 +56,7 @@ class UserViewsTestCase(TestCase):
 
     def test_add_user(self):
         with app.test_client() as client:
-            sam = {"first_name": 'Sam', "last_name": 'Wise'}
+            sam = {"first_name": 'Sam', "last_name": 'Wise', "image_url": ""}
             resp = client.post("/users/new", data=sam, follow_redirects=True)
             html = resp.get_data(as_text=True)
 
